@@ -1,0 +1,874 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hoops Draft Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap">
+<style>
+:root {
+  --bg: #ffffff;
+  --ink: #0b0d12;
+  --muted: #586174;
+  --faint: #8a93a4;
+  --line: #e3e7ee;
+  --tint: #f4f6fb;
+  --blue: #1447ff;
+  --blue-soft: rgba(20, 71, 255, 0.07);
+  --blue-line: rgba(20, 71, 255, 0.38);
+  --on-blue: #ffffff;
+  --font: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #050608;
+    --ink: #f3f5fa;
+    --muted: #98a2b6;
+    --faint: #6b7488;
+    --line: #1a2030;
+    --tint: #0b0e15;
+    --blue: #5b8dff;
+    --blue-soft: rgba(91, 141, 255, 0.11);
+    --blue-line: rgba(91, 141, 255, 0.45);
+    --on-blue: #050608;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #050608;
+  --ink: #f3f5fa;
+  --muted: #98a2b6;
+  --faint: #6b7488;
+  --line: #1a2030;
+  --tint: #0b0e15;
+  --blue: #5b8dff;
+  --blue-soft: rgba(91, 141, 255, 0.11);
+  --blue-line: rgba(91, 141, 255, 0.45);
+  --on-blue: #050608;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 14px/1.5 var(--font);
+}
+button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+[hidden] { display: none !important; }
+
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+/* header */
+.top { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 22px 0 14px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 650; font-size: 17px; letter-spacing: -0.01em; }
+.brand i { width: 10px; height: 10px; border-radius: 50%; background: var(--blue); display: block; }
+.src { color: var(--muted); font-size: 12px; }
+nav.tabs { display: flex; gap: 22px; border-bottom: 1px solid var(--line); }
+nav.tabs button {
+  background: none; border: 0; padding: 10px 0; margin-bottom: -1px; cursor: pointer;
+  color: var(--muted); font-weight: 500; border-bottom: 2px solid transparent;
+}
+nav.tabs button:hover { color: var(--ink); }
+nav.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--blue); }
+
+main { padding: 26px 0 80px; }
+h2 {
+  margin: 0; font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.09em; color: var(--muted);
+}
+.sect { margin-top: 34px; }
+.sect-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.note { color: var(--muted); font-size: 12.5px; max-width: 74ch; margin: 10px 0 0; }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+/* controls */
+.btn {
+  border: 1px solid var(--line); background: transparent; border-radius: 6px;
+  padding: 8px 14px; font-weight: 500; font-size: 13px; cursor: pointer; white-space: nowrap;
+}
+.btn:hover { border-color: var(--ink); }
+.btn:disabled { opacity: .45; cursor: default; border-color: var(--line); }
+.btn.primary { background: var(--blue); border-color: var(--blue); color: var(--on-blue); }
+.btn.primary:hover { filter: brightness(1.1); }
+.btn.on { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.seg button { background: none; border: 0; padding: 6px 12px; font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; border-right: 1px solid var(--line); }
+.seg button:last-child { border-right: 0; }
+.seg button:hover { color: var(--ink); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+input[type="text"], input[type="search"], input[type="number"], select {
+  background: transparent; border: 1px solid var(--line); border-radius: 6px; padding: 7px 10px;
+  font-family: var(--mono); font-size: 13px; min-width: 0;
+}
+input:focus, select:focus { border-color: var(--blue); outline: none; }
+input[type="search"] { font-family: var(--font); width: 200px; }
+select { font-family: var(--font); padding-right: 6px; }
+select option { background: var(--bg); color: var(--ink); }
+.field { display: flex; flex-direction: column; gap: 6px; }
+.field label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+
+/* scoring */
+details.scoring { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 12px 0; }
+details.scoring summary { cursor: pointer; display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; list-style: none; }
+details.scoring summary::-webkit-details-marker { display: none; }
+details.scoring summary::before { content: "+"; font-family: var(--mono); color: var(--blue); width: 12px; }
+details.scoring[open] summary::before { content: "–"; }
+details.scoring summary b { font-weight: 600; }
+details.scoring summary span { color: var(--muted); font-family: var(--mono); font-size: 12px; }
+.wgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 12px; margin-top: 14px; }
+.wgrid input { width: 100%; }
+.lock { color: var(--blue); font-size: 12px; margin-top: 10px; }
+
+/* rankings table */
+.filters { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin: 22px 0 6px; }
+.tablewrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; }
+th {
+  font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted);
+  text-align: right; padding: 10px 10px; border-bottom: 1px solid var(--ink); white-space: nowrap; background: var(--bg);
+}
+th.l, td.l { text-align: left; }
+th button { all: unset; cursor: pointer; }
+th button:hover { color: var(--ink); }
+th.sorted { color: var(--ink); }
+th.sorted button::after { content: " ↓"; color: var(--blue); }
+th.sorted.asc button::after { content: " ↑"; }
+td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 13px; }
+td.l { font-family: var(--font); }
+tbody tr:hover td { background: var(--tint); }
+.rk { color: var(--faint); }
+.strong { font-weight: 600; }
+.pos { color: var(--blue); }
+.dim { color: var(--muted); }
+.faint { color: var(--faint); }
+
+.pl { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.pl .nm { font-weight: 550; overflow: hidden; text-overflow: ellipsis; }
+.pl .sub { color: var(--muted); font-size: 12px; font-family: var(--font); white-space: nowrap; }
+.av {
+  --s: 32px; width: var(--s); height: var(--s); border-radius: 50%; flex: none; display: grid; place-items: center;
+  background-color: var(--tint); box-shadow: inset 0 0 0 1px var(--line);
+  background-repeat: no-repeat; background-size: calc(var(--s) * 20) auto;
+  font: 600 calc(var(--s) * .32)/1 var(--font); color: var(--muted);
+}
+.av:not(.none) { background-image: url("data:image/webp;base64,__SPRITE__"); }
+.tag { display: inline-block; font: 500 10.5px/1 var(--mono); padding: 3px 5px; border: 1px solid var(--line); border-radius: 4px; color: var(--muted); vertical-align: 1px; }
+.tag.blue { color: var(--blue); border-color: var(--blue-line); background: var(--blue-soft); }
+.tag.out { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.delta.up { color: var(--blue); font-weight: 600; }
+
+/* draft: setup */
+.setup { display: flex; flex-wrap: wrap; gap: 22px 28px; align-items: flex-end; }
+.actions { display: flex; gap: 10px; margin-top: 22px; flex-wrap: wrap; }
+.bots { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px 26px; margin-top: 16px; }
+.bots div { border-top: 1px solid var(--line); padding-top: 8px; font-size: 12.5px; color: var(--muted); }
+.bots b { color: var(--ink); font-weight: 600; display: block; }
+
+/* draft: live */
+.status { display: flex; justify-content: space-between; gap: 16px; align-items: center; flex-wrap: wrap; padding: 14px 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--line); }
+.status .clock { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.status .big { font-size: 20px; font-weight: 650; letter-spacing: -0.01em; }
+.status .big.you { color: var(--blue); }
+.status .meta { color: var(--muted); font-size: 13px; }
+.status .ctl { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.cols { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 40px; margin-top: 26px; align-items: start; }
+@media (max-width: 960px) { .cols { grid-template-columns: 1fr; gap: 28px; } }
+
+.avail { max-height: 640px; overflow-y: auto; border-top: 1px solid var(--ink); }
+.arow { display: grid; grid-template-columns: minmax(0, 1fr) 62px 48px 46px 68px; gap: 8px; align-items: center; padding: 9px 4px; border-bottom: 1px solid var(--line); }
+.arow.head { position: sticky; top: 0; background: var(--bg); z-index: 1; padding: 8px 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); border-bottom: 1px solid var(--line); }
+.arow.head span { text-align: right; } .arow.head span:first-child { text-align: left; }
+.arow .num { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; font-size: 13px; }
+.arow.rec { background: var(--blue-soft); }
+.why { display: block; font-size: 12px; color: var(--blue); margin-top: 1px; white-space: normal; }
+.arow .btn { padding: 6px 0; text-align: center; width: 100%; }
+@media (max-width: 620px) { .arow { grid-template-columns: minmax(0, 1fr) 58px 64px; } .arow .adp, .arow .dl { display: none; } }
+
+.slot { display: grid; grid-template-columns: 42px 1fr auto; gap: 10px; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--line); }
+.slot .sn { font: 500 11px var(--mono); color: var(--muted); letter-spacing: .04em; }
+.slot.empty .nm { color: var(--faint); }
+.slot .pl .nm { font-weight: 550; font-size: 13.5px; }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px; }
+.tiles div { border-top: 1px solid var(--ink); padding-top: 8px; }
+.tiles b { display: block; font: 600 20px/1.2 var(--mono); }
+.tiles span { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+
+.board { overflow-x: auto; border-top: 1px solid var(--ink); }
+.board table { table-layout: fixed; min-width: 900px; }
+.board th { text-align: left; padding: 8px 8px; border-bottom: 1px solid var(--line); vertical-align: bottom; }
+.board th small { display: block; font-weight: 500; text-transform: none; letter-spacing: 0; font-size: 11px; color: var(--faint); }
+.board th.me { color: var(--blue); }
+.board td { padding: 6px 8px; text-align: left; font-family: var(--font); font-size: 12px; line-height: 1.3; height: 46px; vertical-align: top; }
+.board td.rn { width: 34px; color: var(--faint); font-family: var(--mono); }
+.board td.me { background: var(--blue-soft); }
+.board td.now { box-shadow: inset 0 0 0 2px var(--blue); }
+.board td .pk { font: 500 10px var(--mono); color: var(--faint); display: block; }
+.board td .nm { font-weight: 550; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+.board td .ps { color: var(--muted); }
+
+.grade { display: inline-block; min-width: 34px; text-align: center; padding: 3px 7px; border-radius: 4px; font: 600 12px/1.1 var(--mono); border: 1px solid var(--line); color: var(--muted); }
+.grade.A { background: var(--blue); border-color: var(--blue); color: var(--on-blue); }
+.grade.B { border-color: var(--blue-line); color: var(--blue); }
+.grade.D { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+#ratings tr.me td { background: var(--blue-soft); }
+#ratings td.l { font-family: var(--font); }
+.bar { height: 6px; background: var(--tint); border-radius: 2px; min-width: 120px; overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--blue); }
+
+.progress { color: var(--muted); font-size: 12.5px; margin-top: 12px; }
+.empty-msg { padding: 28px 0; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><i></i>Hoops Draft Room</div>
+    <div class="src">2026–27 · ESPN projections · FantasyPros ADP · updated Sep 24, 2026</div>
+  </header>
+  <nav class="tabs" role="tablist">
+    <button role="tab" id="tab-rank" aria-selected="true">Rankings</button>
+    <button role="tab" id="tab-draft" aria-selected="false">Draft room</button>
+  </nav>
+
+  <main>
+    <details class="scoring" id="scoring">
+      <summary><b>Scoring</b><span id="score-line"></span></summary>
+      <div style="margin-top:14px" class="setup">
+        <div class="field"><label>Preset</label>
+          <select id="preset"><option value="espn">ESPN default</option><option value="simple">Simple box score</option><option value="custom">Custom</option></select>
+        </div>
+      </div>
+      <fieldset id="wfield"><div class="wgrid" id="wgrid"></div></fieldset>
+      <div class="lock" id="lock" hidden>Scoring is locked while a draft is in progress.</div>
+    </details>
+
+    <!-- RANKINGS -->
+    <section id="view-rank">
+      <div class="filters">
+        <input type="search" id="q" placeholder="Search players" aria-label="Search players">
+        <div class="seg" id="posf"></div>
+        <span class="note" style="margin:0" id="rank-note"></span>
+      </div>
+      <div class="tablewrap">
+        <table id="rank-table">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <details class="note" style="margin-top:22px">
+        <summary style="cursor:pointer;color:var(--ink);font-weight:500">About the projections</summary>
+        <p>Stat projections, projected games played, and position eligibility come from ESPN Fantasy for 2026–27. ADP is the FantasyPros consensus of Yahoo and ESPN drafts, which are mostly category leagues, so it can differ from a points league. Δ ADP is ADP minus this page's points-league rank: positive means the points model likes a player more than the crowd does.</p>
+        <p>ESPN doesn't publish shot attempts, so FGA and FTA are estimated from 2025–26 attempt rates, scaled to projected minutes and reconciled to projected points. They only matter if your scoring uses FGM, FGA, FTM or FTA. Rookies have ESPN projections but no NBA history. Injury tags are ESPN's as of Sep 24 and projected games already reflect ESPN's expectations.</p>
+      </details>
+    </section>
+
+    <!-- DRAFT -->
+    <section id="view-draft" hidden>
+      <div id="setup">
+        <div class="setup">
+          <div class="field"><label>Your pick</label><div class="seg" id="slot-seg"></div></div>
+          <div class="field"><label>Teams</label><input type="number" id="cfg-teams" min="4" max="14" style="width:74px"></div>
+          <div class="field"><label>UTIL spots</label><input type="number" id="cfg-util" min="1" max="3" style="width:74px"></div>
+          <div class="field"><label>Bench</label><input type="number" id="cfg-bench" min="0" max="6" style="width:74px"></div>
+          <div class="field"><label>Bot pace</label>
+            <div class="seg" id="pace-seg">
+              <button data-v="real">Realistic</button><button data-v="fast">Fast</button><button data-v="instant">Instant</button>
+            </div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn primary" id="btn-start">Start draft</button>
+          <button class="btn" id="btn-compare">Compare draft slots</button>
+        </div>
+        <p class="note" id="setup-note"></p>
+        <div class="bots" id="bots"></div>
+        <div id="compare-out" class="sect" hidden></div>
+      </div>
+
+      <div id="live" hidden>
+        <div class="status">
+          <div class="clock" id="clock"></div>
+          <div class="ctl">
+            <div class="seg" id="pace-live">
+              <button data-v="real">Realistic</button><button data-v="fast">Fast</button><button data-v="instant">Instant</button>
+            </div>
+            <button class="btn" id="btn-auto">Auto-draft for me</button>
+            <button class="btn" id="btn-new">New draft</button>
+          </div>
+        </div>
+        <div class="cols">
+          <div>
+            <div class="sect-head" style="margin-top:0">
+              <h2 id="avail-h">Available players</h2>
+              <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+                <input type="search" id="aq" placeholder="Search" aria-label="Search available players" style="width:150px">
+                <div class="seg" id="aposf"></div>
+                <div class="seg" id="asort">
+                  <button data-v="best">Best for you</button><button data-v="tot">Projected</button><button data-v="adp">ADP</button>
+                </div>
+              </div>
+            </div>
+            <div class="avail" id="avail"></div>
+          </div>
+          <aside>
+            <h2>Your team</h2>
+            <div id="roster" style="margin-top:12px"></div>
+            <div class="tiles" id="tiles"></div>
+          </aside>
+        </div>
+        <div class="sect"><div class="sect-head"><h2>Draft board</h2></div><div class="board" id="board"></div></div>
+        <div class="sect"><div class="sect-head"><h2>Team ratings</h2></div>
+          <div class="tablewrap"><table id="ratings"><thead><tr>
+            <th class="l">#</th><th class="l">Team</th><th class="l">Style</th><th>Grade</th><th>Lineup FPTS/G</th><th>Projected pts</th><th>Players</th>
+          </tr></thead><tbody></tbody></table></div>
+          <p class="note">Projected pts = starters' projected season points plus 30% credit for bench depth. Grades are curved against the league.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+'use strict';
+const RAW = __PLAYERS__;
+
+/* ---------- helpers ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const f1 = x => x.toFixed(1);
+const f0 = x => Math.round(x).toLocaleString('en-US');
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('hdr.' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('hdr.' + k, JSON.stringify(v)); } catch (e) { /* storage unavailable */ } },
+};
+function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function gauss(r) { let u = 0; while (!u) u = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * r()); }
+function shuffle(a, r) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+/* ---------- scoring ---------- */
+const PRESETS = {
+  espn: { pts: 1, tpm: 1, reb: 1, ast: 2, stl: 4, blk: 4, to: -2, fgm: 2, fga: -1, ftm: 1, fta: -1 },
+  simple: { pts: 1, tpm: 0, reb: 1.2, ast: 1.5, stl: 3, blk: 3, to: -1, fgm: 0, fga: 0, ftm: 0, fta: 0 },
+};
+const W_KEYS = [['pts', 'PTS'], ['tpm', '3PM'], ['reb', 'REB'], ['ast', 'AST'], ['stl', 'STL'], ['blk', 'BLK'], ['to', 'TO'], ['fgm', 'FGM'], ['fga', 'FGA'], ['ftm', 'FTM'], ['fta', 'FTA']];
+let weights = Object.assign({}, PRESETS.espn, store.get('weights', {}));
+
+/* ---------- players ---------- */
+const P = RAW.map((r, i) => ({
+  idx: i, id: r.id, name: r.n, team: r.t, pos: r.p, age: r.age, rookie: r.rk, inj: r.inj, adp: r.adp,
+  gp: r.gp, mn: r.mn, fgp: r.fg, ftp: r.ft, tp: r.tp, rb: r.rb, ast: r.as_, st: r.st, bk: r.bk, to: r.to, pt: r.pt,
+  fga: r.fga, fta: r.fta, fgm: r.fg * r.fga, ftm: r.ft * r.fta, last: r.L, hs: r.hs,
+}));
+
+function fpg(p) {
+  const w = weights;
+  return p.pt * w.pts + p.tp * w.tpm + p.rb * w.reb + p.ast * w.ast + p.st * w.stl + p.bk * w.blk + p.to * w.to +
+    p.fgm * w.fgm + p.fga * w.fga + p.ftm * w.ftm + p.fta * w.fta;
+}
+function lastFpg(p) {
+  const L = p.last, w = weights;
+  if (!L) return null;
+  return L[2] * w.pts + L[3] * w.tpm + L[4] * w.reb + L[5] * w.ast + L[6] * w.stl + L[7] * w.blk + L[8] * w.to +
+    L[9] * w.fgm + L[10] * w.fga + L[11] * w.ftm + L[12] * w.fta;
+}
+
+/* ---------- league config, slots ---------- */
+let cfg = Object.assign({ teams: 8, slot: 1, util: 3, bench: 3, pace: 'real' }, store.get('cfg', {}));
+let SLOTS = [];
+function slotOK(slot, pos) {
+  if (slot === 'G') return pos.includes('PG') || pos.includes('SG');
+  if (slot === 'F') return pos.includes('SF') || pos.includes('PF');
+  if (slot === 'UTIL') return true;
+  return pos.includes(slot);
+}
+function prepareSlots() {
+  SLOTS = ['PG', 'SG', 'SF', 'PF', 'C', 'G', 'F'];
+  for (let i = 0; i < cfg.util; i++) SLOTS.push('UTIL');
+  P.forEach(p => { p.sl = []; SLOTS.forEach((s, i) => { if (slotOK(s, p.pos)) p.sl.push(i); }); });
+}
+
+/* ---------- valuation: projected points, replacement level, value over replacement ---------- */
+const POS5 = ['PG', 'SG', 'SF', 'PF', 'C'];
+let RANKED = [], REPL = {}, CURVE = [];
+function recompute() {
+  P.forEach(p => { p.fpgv = fpg(p); p.tot = p.fpgv * p.gp; p.lfpg = lastFpg(p); });
+  RANKED = P.slice().sort((a, b) => b.tot - a.tot);
+  RANKED.forEach((p, i) => { p.rank = i + 1; });
+  // replacement = best undrafted player at each position after a full draft
+  const drafted = cfg.teams * (SLOTS.length + cfg.bench);
+  const pool = RANKED.slice(drafted);
+  const rest = pool.length >= 5 ? pool : RANKED.slice(-10);
+  POS5.forEach(pos => { const b = rest.find(p => p.pos.includes(pos)); REPL[pos] = b ? b.tot : rest[rest.length - 1].tot; });
+  P.forEach(p => { p.vorp = p.tot - Math.min(...p.pos.map(x => REPL[x])); });
+  CURVE = P.map(p => p.vorp).sort((a, b) => b - a);
+}
+
+/* ---------- lineup solver: best legal lineup = max-weight matching (matroid greedy) ---------- */
+function solve(list, val) {
+  const n = list.length, ns = SLOTS.length;
+  const v = new Array(n), ord = new Array(n);
+  for (let i = 0; i < n; i++) { v[i] = val(list[i]); ord[i] = i; }
+  ord.sort((a, b) => v[b] - v[a]);
+  const owner = new Int16Array(ns).fill(-1), vis = new Uint8Array(ns);
+  function aug(i) {
+    const sl = list[i].sl;
+    for (let k = 0; k < sl.length; k++) {
+      const s = sl[k];
+      if (vis[s]) continue;
+      vis[s] = 1;
+      if (owner[s] < 0 || aug(owner[s])) { owner[s] = i; return true; }
+    }
+    return false;
+  }
+  let total = 0, size = 0;
+  for (let a = 0; a < n && size < ns; a++) {
+    const i = ord[a];
+    vis.fill(0);
+    if (aug(i)) { size++; total += Math.max(v[i], 0); }
+  }
+  return { total, size, owner };
+}
+
+/* ---------- bots ---------- */
+const PERSONAS = [
+  { name: 'Value hunter', blurb: 'Trusts its own numbers over the crowd.', adp: 0.10, noise: 0.03, temp: 0.5 },
+  { name: 'Follows ADP', blurb: 'Drafts close to consensus order.', adp: 0.70, noise: 0.04, temp: 0.9, rw: 0.25 },
+  { name: 'Guard-heavy', blurb: 'Leans toward PG and SG.', adp: 0.30, noise: 0.05, temp: 0.8, pos: { PG: 0.07, SG: 0.07 } },
+  { name: 'Big-man believer', blurb: 'Leans toward centers and power forwards.', adp: 0.30, noise: 0.05, temp: 0.8, pos: { C: 0.07, PF: 0.04 } },
+  { name: 'Injury-averse', blurb: 'Fades players with injury flags and low games.', adp: 0.30, noise: 0.04, temp: 0.7, ia: 1.7 },
+  { name: 'Youth upside', blurb: 'Pays up for young players, fades veterans.', adp: 0.25, noise: 0.05, temp: 0.9, young: 0.08, old: -0.05 },
+  { name: 'Trusts veterans', blurb: 'Prefers proven players over upside.', adp: 0.30, noise: 0.04, temp: 0.7, young: -0.04, old: 0.04 },
+  { name: 'Autopilot', blurb: 'Follows the rankings queue, still fills its lineup.', adp: 0.90, noise: 0.06, temp: 1.1, rw: 0.5 },
+];
+
+function buildPerceived(ps, rng) {
+  const arr = new Float64Array(P.length), ia = ps.ia == null ? 1 : ps.ia;
+  for (const p of P) {
+    let adpV = p.vorp;
+    if (p.adp) {
+      const k = Math.min(Math.max(p.adp - 1, 0), CURVE.length - 1), lo = Math.floor(k), hi = Math.min(lo + 1, CURVE.length - 1);
+      adpV = CURVE[lo] + (CURVE[hi] - CURVE[lo]) * (k - lo);
+    }
+    let v = (1 - ps.adp) * p.vorp + ps.adp * adpV;
+    let m = 1;
+    if (ps.pos) m += Math.max(0, ...p.pos.map(q => ps.pos[q] || 0));
+    const age = p.age == null ? 20 : p.age;
+    if (age <= 23) m += ps.young || 0;
+    if (age >= 31) m += ps.old || 0;
+    if (p.inj === 'OUT') m -= 0.10 * ia; else if (p.inj === 'DTD') m -= 0.02 * ia;
+    if (p.gp < 60) m -= ia * 0.004 * (60 - p.gp);
+    m *= 1 + gauss(rng) * ps.noise;
+    arr[p.idx] = v > 0 ? v * m : v;
+  }
+  return arr;
+}
+
+/* ---------- draft engine (pure: works on a state object S) ---------- */
+function newState(userIdx, rng) {
+  const T = cfg.teams, rounds = SLOTS.length + cfg.bench, order = [];
+  for (let r = 0; r < rounds; r++) for (let k = 0; k < T; k++) order.push({ team: r % 2 ? T - 1 - k : k, round: r + 1 });
+  const pool = shuffle(PERSONAS.slice(), rng), teams = [];
+  let pi = 0;
+  for (let i = 0; i < T; i++) {
+    if (i === userIdx) teams.push({ idx: i, players: [], persona: null, perc: null });
+    else { const ps = pool[pi++ % pool.length]; teams.push({ idx: i, players: [], persona: ps, perc: buildPerceived(ps, rng) }); }
+  }
+  return { T, rounds, user: userIdx, order, pick: 0, avail: RANKED.slice(), teams, log: [], rng, done: false };
+}
+function applyPick(S, team, p) {
+  const i = S.avail.indexOf(p);
+  if (i < 0) return;
+  S.avail.splice(i, 1);
+  team.players.push(p);
+  S.log.push({ team: team.idx, p, pickNo: S.pick + 1, round: S.order[S.pick].round });
+  S.pick++;
+  if (S.pick >= S.order.length) S.done = true;
+}
+const userVal = p => p.vorp;
+
+// Score every candidate by what it does for THIS team's lineup, not by rank alone.
+function evaluate(S, team, val, persona) {
+  const picksLeft = S.rounds - team.players.length;
+  const base = solve(team.players, val);
+  const unfilled = SLOTS.length - base.size;
+  const mustFill = picksLeft <= unfilled;
+  const cands = mustFill ? S.avail.slice() : S.avail.slice().sort((a, b) => val(b) - val(a)).slice(0, 60);
+  const benchN = Math.max(0, team.players.length - base.size);
+  const out = [];
+  for (const c of cands) {
+    const r = solve(team.players.concat([c]), val);
+    const mine = r.owner.indexOf(team.players.length);
+    const inL = mine >= 0;
+    const gain = r.total - base.total;
+    const depth = inL ? 0 : 0.30 * Math.max(val(c), 0) * Math.pow(0.6, benchN);
+    const fills = r.size > base.size;
+    let score = gain + depth;
+    if (mustFill && !fills) score = -1e12 + val(c);
+    else if (persona && persona.rw) score = (1 - persona.rw) * score + persona.rw * Math.max(val(c), 0);
+    out.push({ p: c, score, gain, inL, fills, slot: inL ? SLOTS[mine] : null, open: inL && base.owner[mine] < 0 });
+  }
+  out.sort((a, b) => b.score - a.score);
+  return out;
+}
+function sampleChoice(ev, persona, rng) {
+  const top = ev.slice(0, 4).filter(e => e.score > -1e11);
+  if (!top.length) return ev[0].p;
+  const best = top[0].score, tau = persona.temp * Math.max(25, 0.02 * Math.abs(best));
+  const w = top.map(e => Math.exp((e.score - best) / tau)), sum = w.reduce((a, b) => a + b, 0);
+  let x = rng() * sum;
+  for (let i = 0; i < top.length; i++) { x -= w[i]; if (x <= 0) return top[i].p; }
+  return top[0].p;
+}
+function autoPick(S) {
+  const team = S.teams[S.order[S.pick].team];
+  let choice;
+  if (!team.persona) choice = evaluate(S, team, userVal, null)[0].p;
+  else { const perc = team.perc; choice = sampleChoice(evaluate(S, team, p => perc[p.idx], team.persona), team.persona, S.rng); }
+  applyPick(S, team, choice);
+  return choice;
+}
+function runToEnd(S) { while (!S.done) autoPick(S); }
+
+function teamMetrics(team) {
+  const r = solve(team.players, p => p.tot);
+  const inL = new Set();
+  let startTot = 0, startFpg = 0;
+  for (let s = 0; s < r.owner.length; s++) if (r.owner[s] >= 0) { const p = team.players[r.owner[s]]; inL.add(p); startTot += p.tot; startFpg += p.fpgv; }
+  const benchTot = team.players.reduce((a, p) => a + (inL.has(p) ? 0 : Math.max(p.tot, 0)), 0);
+  return { startTot, startFpg, benchTot, strength: startTot + 0.3 * benchTot, owner: r.owner };
+}
+function gradeFor(z) {
+  if (z >= 1.25) return 'A+'; if (z >= 0.75) return 'A'; if (z >= 0.35) return 'A-'; if (z >= 0.1) return 'B+';
+  if (z >= -0.1) return 'B'; if (z >= -0.35) return 'B-'; if (z >= -0.75) return 'C+'; if (z >= -1.25) return 'C'; return 'D';
+}
+
+/* ---------- avatars, small renderers ---------- */
+function avatar(p, size) {
+  const st = size ? `--s:${size}px;` : '';
+  if (p.hs < 0) return `<span class="av none" style="${st}">${esc(p.name.split(' ').map(x => x[0]).slice(0, 2).join(''))}</span>`;
+  const col = p.hs % 20, row = Math.floor(p.hs / 20);
+  return `<span class="av" style="${st}background-position:calc(var(--s)*-${col}) calc(var(--s)*-${row})"></span>`;
+}
+const posTxt = p => p.pos.join('/');
+const injTag = p => p.inj === 'OUT' ? ' <span class="tag out">OUT</span>' : p.inj === 'DTD' ? ' <span class="tag">DTD</span>' : '';
+function playerCell(p, size) {
+  return `<div class="pl">${avatar(p, size)}<div style="min-width:0"><div class="nm">${esc(p.name)}${injTag(p)}${p.rookie ? ' <span class="tag blue">R</span>' : ''}</div><div class="sub">${p.team} · ${posTxt(p)}</div></div></div>`;
+}
+const delta = p => p.adp ? p.adp - p.rank : null;
+function deltaTxt(p) { const d = delta(p); if (d == null) return '<span class="faint">–</span>'; const r = Math.round(d); return `<span class="delta ${r >= 10 ? 'up' : ''}">${r > 0 ? '+' : ''}${r}</span>`; }
+
+/* ---------- scoring UI ---------- */
+function scoreLine() {
+  return W_KEYS.filter(([k]) => weights[k] !== 0).map(([k, l]) => `${l} ${weights[k]}`).join(' · ');
+}
+function currentPreset() {
+  for (const k of Object.keys(PRESETS)) if (W_KEYS.every(([w]) => PRESETS[k][w] === weights[w])) return k;
+  return 'custom';
+}
+function buildScoring() {
+  $('#wgrid').innerHTML = W_KEYS.map(([k, l]) => `<div class="field"><label for="w-${k}">${l}</label><input type="number" step="0.5" id="w-${k}" value="${weights[k]}"></div>`).join('');
+  W_KEYS.forEach(([k]) => $('#w-' + k).addEventListener('input', e => {
+    const v = parseFloat(e.target.value);
+    weights[k] = isNaN(v) ? 0 : v;
+    afterWeights();
+  }));
+  refreshScoring();
+}
+function refreshScoring() {
+  $('#score-line').textContent = scoreLine();
+  $('#preset').value = currentPreset();
+  W_KEYS.forEach(([k]) => { const el = $('#w-' + k); if (document.activeElement !== el) el.value = weights[k]; });
+  const locked = !!(D && !D.done);
+  $('#wfield').disabled = locked; $('#preset').disabled = locked; $('#lock').hidden = !locked;
+}
+function afterWeights() {
+  store.set('weights', weights);
+  recompute();
+  renderRank();
+  refreshScoring();
+}
+$('#preset').addEventListener('change', e => {
+  if (e.target.value === 'custom') return;
+  Object.assign(weights, PRESETS[e.target.value]);
+  afterWeights();
+});
+
+/* ---------- rankings view ---------- */
+const COLS = [
+  { k: 'rank', l: '#', cls: 'l rk', get: p => p.rank, fmt: p => p.rank },
+  { k: 'name', l: 'Player', cls: 'l', get: p => p.name, fmt: p => playerCell(p), str: true },
+  { k: 'gp', l: 'GP', get: p => p.gp, fmt: p => p.gp },
+  { k: 'mn', l: 'MIN', get: p => p.mn, fmt: p => f1(p.mn) },
+  { k: 'fpgv', l: 'FPTS/G', cls: 'strong', get: p => p.fpgv, fmt: p => f1(p.fpgv) },
+  { k: 'tot', l: 'FPTS', cls: 'strong', get: p => p.tot, fmt: p => f0(p.tot) },
+  { k: 'lfpg', l: '25–26', cls: 'dim', get: p => p.lfpg, fmt: p => p.lfpg == null ? '<span class="faint">–</span>' : f1(p.lfpg) },
+  { k: 'adp', l: 'ADP', get: p => p.adp, fmt: p => p.adp ? f1(p.adp) : '<span class="faint">–</span>', nullLast: true, asc: true },
+  { k: 'dl', l: 'Δ ADP', get: p => delta(p), fmt: p => deltaTxt(p) },
+  { k: 'pt', l: 'PTS', get: p => p.pt, fmt: p => f1(p.pt) },
+  { k: 'rb', l: 'REB', get: p => p.rb, fmt: p => f1(p.rb) },
+  { k: 'ast', l: 'AST', get: p => p.ast, fmt: p => f1(p.ast) },
+  { k: 'st', l: 'STL', get: p => p.st, fmt: p => f1(p.st) },
+  { k: 'bk', l: 'BLK', get: p => p.bk, fmt: p => f1(p.bk) },
+  { k: 'to', l: 'TO', get: p => p.to, fmt: p => f1(p.to) },
+  { k: 'tp', l: '3PM', get: p => p.tp, fmt: p => f1(p.tp) },
+  { k: 'fgp', l: 'FG%', get: p => p.fgp, fmt: p => (p.fgp * 100).toFixed(1) },
+  { k: 'ftp', l: 'FT%', get: p => p.ftp, fmt: p => (p.ftp * 100).toFixed(1) },
+];
+let sortK = 'tot', sortAsc = false, posF = 'ALL', qStr = '';
+function renderRank() {
+  const col = COLS.find(c => c.k === sortK);
+  let rows = RANKED.filter(p => (posF === 'ALL' || p.pos.includes(posF)) && (!qStr || p.name.toLowerCase().includes(qStr)));
+  rows.sort((a, b) => {
+    const x = col.get(a), y = col.get(b);
+    if (x == null && y == null) return 0; if (x == null) return 1; if (y == null) return -1;
+    const c = col.str ? String(x).localeCompare(String(y)) : x - y;
+    return sortAsc ? c : -c;
+  });
+  $('#rank-table thead').innerHTML = '<tr>' + COLS.map(c =>
+    `<th class="${c.cls && c.cls.split(' ').includes('l') ? 'l ' : ''}${c.k === sortK ? 'sorted' + (sortAsc ? ' asc' : '') : ''}"><button data-k="${c.k}">${c.l}</button></th>`).join('') + '</tr>';
+  $('#rank-table tbody').innerHTML = rows.map(p => '<tr>' + COLS.map(c => `<td class="${c.cls || ''}">${c.fmt(p)}</td>`).join('') + '</tr>').join('');
+  $('#rank-note').textContent = `${rows.length} players`;
+}
+$('#rank-table thead').addEventListener('click', e => {
+  const b = e.target.closest('button[data-k]');
+  if (!b) return;
+  const k = b.dataset.k, c = COLS.find(x => x.k === k);
+  if (sortK === k) sortAsc = !sortAsc; else { sortK = k; sortAsc = !!c.asc || k === 'name' || k === 'rank'; }
+  renderRank();
+});
+function buildPosFilter(el, get, set, all) {
+  el.innerHTML = ['ALL', ...POS5].map(x => `<button data-v="${x}" aria-pressed="${get() === x}">${x === 'ALL' ? 'All' : x}</button>`).join('');
+  el.onclick = e => { const b = e.target.closest('button'); if (!b) return; set(b.dataset.v); $$('button', el).forEach(x => x.setAttribute('aria-pressed', x === b)); };
+}
+buildPosFilter($('#posf'), () => posF, v => { posF = v; renderRank(); });
+$('#q').addEventListener('input', e => { qStr = e.target.value.trim().toLowerCase(); renderRank(); });
+
+/* ---------- draft view ---------- */
+let D = null;
+const PACE_MS = { real: 420, fast: 110, instant: 0 };
+
+function buildSetup() {
+  $('#cfg-teams').value = cfg.teams; $('#cfg-util').value = cfg.util; $('#cfg-bench').value = cfg.bench;
+  cfg.slot = Math.min(cfg.slot, cfg.teams);
+  $('#slot-seg').innerHTML = Array.from({ length: cfg.teams }, (_, i) => `<button data-v="${i + 1}" aria-pressed="${cfg.slot === i + 1}">${i + 1}</button>`).join('');
+  $$('#pace-seg button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === cfg.pace));
+  const rounds = SLOTS.length + cfg.bench;
+  $('#setup-note').textContent = `Snake draft, ${rounds} rounds. Lineup: PG, SG, SF, PF, C, G, F and ${cfg.util} UTIL; ${cfg.bench} bench. Players can fill any slot ESPN lists them at. Bots use your scoring settings.`;
+  $('#bots').innerHTML = PERSONAS.map(p => `<div><b>${p.name}</b>${p.blurb}</div>`).join('');
+}
+$('#slot-seg').addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; cfg.slot = +b.dataset.v; store.set('cfg', cfg); buildSetup(); });
+['teams', 'util', 'bench'].forEach(k => $('#cfg-' + k).addEventListener('change', e => {
+  const lim = { teams: [4, 14], util: [1, 3], bench: [0, 6] }[k];
+  cfg[k] = Math.min(lim[1], Math.max(lim[0], parseInt(e.target.value) || lim[0]));
+  store.set('cfg', cfg); prepareSlots(); recompute(); buildSetup();
+}));
+function setPace(v) { cfg.pace = v; store.set('cfg', cfg); $$('#pace-seg button, #pace-live button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === v)); if (D && !D.done) advance(); }
+$('#pace-seg').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setPace(b.dataset.v); });
+$('#pace-live').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setPace(b.dataset.v); });
+
+function startDraft() {
+  if (D) clearTimeout(D.timer);
+  store.set('cfg', cfg);
+  D = newState(cfg.slot - 1, mulberry32((Date.now() ^ (Math.random() * 1e9)) >>> 0));
+  Object.assign(D, { auto: false, timer: null, sort: 'best', pos: 'ALL', q: '' });
+  $('#setup').hidden = true; $('#live').hidden = false;
+  $('#aq').value = '';
+  buildPosFilter($('#aposf'), () => D.pos, v => { D.pos = v; renderAvail(); });
+  $$('#asort button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === 'best'));
+  $$('#pace-live button').forEach(b => b.setAttribute('aria-pressed', b.dataset.v === cfg.pace));
+  refreshScoring();
+  advance();
+}
+$('#btn-start').addEventListener('click', startDraft);
+$('#btn-new').addEventListener('click', () => {
+  if (D) clearTimeout(D.timer);
+  D = null; $('#live').hidden = true; $('#setup').hidden = false; refreshScoring(); buildSetup();
+});
+$('#btn-auto').addEventListener('click', () => { if (!D || D.done) return; D.auto = !D.auto; advance(); });
+$('#aq').addEventListener('input', e => { if (D) { D.q = e.target.value.trim().toLowerCase(); renderAvail(); } });
+$('#asort').addEventListener('click', e => { const b = e.target.closest('button'); if (!b || !D) return; D.sort = b.dataset.v; $$('#asort button').forEach(x => x.setAttribute('aria-pressed', x === b)); renderAvail(); });
+
+function isUserTurn() { return D && !D.done && D.order[D.pick].team === D.user; }
+function advance() {
+  const d = D;
+  clearTimeout(d.timer);
+  while (!d.done) {
+    const isUser = d.order[d.pick].team === d.user;
+    if (isUser && !d.auto) { render(); return; }
+    const ms = PACE_MS[cfg.pace];
+    if (ms > 0) { render(); d.timer = setTimeout(() => { if (d !== D) return; autoPick(d); advance(); }, ms); return; }
+    autoPick(d);
+  }
+  render();
+}
+$('#avail').addEventListener('click', e => {
+  const b = e.target.closest('button[data-p]');
+  if (!b || !isUserTurn() || D.auto) return;
+  const p = P[+b.dataset.p];
+  applyPick(D, D.teams[D.user], p);
+  advance();
+});
+
+function render() { renderClock(); renderAvail(); renderRoster(); renderBoard(); renderRatings(); refreshScoring(); }
+
+function renderClock() {
+  const el = $('#clock'), auto = $('#btn-auto');
+  auto.classList.toggle('on', D.auto); auto.disabled = D.done;
+  auto.textContent = D.auto ? 'Autopilot on' : 'Auto-draft for me';
+  if (D.done) { el.innerHTML = `<span class="big">Draft complete</span><span class="meta">${D.order.length} picks</span>`; return; }
+  const s = D.order[D.pick], t = D.teams[s.team], you = s.team === D.user;
+  let next = '';
+  if (!you || D.auto) { for (let i = D.pick + 1; i < D.order.length; i++) if (D.order[i].team === D.user) { next = ` · you pick in ${i - D.pick}`; break; } }
+  el.innerHTML = `<span class="big ${you ? 'you' : ''}">${you ? 'You’re on the clock' : `Team ${t.idx + 1} is picking…`}</span>` +
+    `<span class="meta mono">Round ${s.round} · Pick ${D.pick + 1} of ${D.order.length}${next}</span>`;
+}
+
+function reasonFor(e, pickNo) {
+  const out = [];
+  if (e.inL && e.open) out.push(`Fills open ${e.slot}`);
+  else if (e.inL && e.gain > 0) out.push(`Upgrades your ${e.slot}`);
+  else if (!e.inL) out.push('Bench depth');
+  const p = e.p;
+  if (p.adp && p.adp - pickNo >= 6) out.push(`Falling: ADP ${Math.round(p.adp)}`);
+  else if (p.adp && pickNo - p.adp >= 10) out.push(`Reach: ADP ${Math.round(p.adp)}`);
+  return out.join(' · ');
+}
+
+function renderAvail() {
+  const el = $('#avail'), canPick = isUserTurn() && !D.auto;
+  const team = D.teams[D.user];
+  let evMap = new Map(), ordered;
+  if (!D.done) {
+    const ev = evaluate(D, team, userVal, null);
+    ev.forEach((e, i) => { e.i = i; evMap.set(e.p, e); });
+  }
+  const pickNo = D.pick + 1;
+  if (D.sort === 'best' && evMap.size) {
+    const scored = Array.from(evMap.values()).filter(e => e.score > -1e11).sort((a, b) => b.score - a.score).map(e => e.p);
+    const seen = new Set(scored);
+    ordered = scored.concat(D.avail.filter(p => !seen.has(p)));
+  } else if (D.sort === 'adp') {
+    ordered = D.avail.slice().sort((a, b) => (a.adp || 999) - (b.adp || 999));
+  } else ordered = D.avail.slice();
+  const rows = ordered.filter(p => (D.pos === 'ALL' || p.pos.includes(D.pos)) && (!D.q || p.name.toLowerCase().includes(D.q))).slice(0, 80);
+  const filtering = D.pos !== 'ALL' || D.q;
+  el.innerHTML = `<div class="arow head"><span>Player</span><span>FPTS/G</span><span class="adp">ADP</span><span class="dl">Δ</span><span></span></div>` +
+    (rows.length ? rows.map((p, i) => {
+      const e = evMap.get(p), top = D.sort === 'best' && !filtering && i < 3 && e && e.score > -1e11;
+      return `<div class="arow ${top ? 'rec' : ''}"><div>${playerCell(p, 34)}${top ? `<span class="why">${reasonFor(e, pickNo)}</span>` : ''}</div>` +
+        `<span class="num strong">${f1(p.fpgv)}</span><span class="num adp dim">${p.adp ? Math.round(p.adp) : '–'}</span><span class="num dl">${deltaTxt(p)}</span>` +
+        `<button class="btn ${top && i === 0 ? 'primary' : ''}" data-p="${p.idx}" ${canPick ? '' : 'disabled'}>Draft</button></div>`;
+    }).join('') : '<div class="empty-msg">No players match.</div>');
+  $('#avail-h').textContent = `Available players · ${D.avail.length}`;
+}
+
+function renderRoster() {
+  const team = D.teams[D.user], m = teamMetrics(team), inL = new Set();
+  let html = '';
+  SLOTS.forEach((s, i) => {
+    const p = m.owner[i] >= 0 ? team.players[m.owner[i]] : null;
+    if (p) inL.add(p);
+    html += `<div class="slot ${p ? '' : 'empty'}"><span class="sn">${s}</span>` +
+      (p ? `${playerCell(p, 30)}<span class="num mono strong">${f1(p.fpgv)}</span>` : `<span class="nm">Open</span><span></span>`) + `</div>`;
+  });
+  const bench = team.players.filter(p => !inL.has(p));
+  const nb = Math.max(cfg.bench, bench.length);
+  for (let i = 0; i < nb; i++) {
+    const p = bench[i];
+    html += `<div class="slot ${p ? '' : 'empty'}"><span class="sn">BN</span>` +
+      (p ? `${playerCell(p, 30)}<span class="num mono dim">${f1(p.fpgv)}</span>` : `<span class="nm">Open</span><span></span>`) + `</div>`;
+  }
+  $('#roster').innerHTML = html;
+  $('#tiles').innerHTML = `<div><b>${f1(m.startFpg)}</b><span>Lineup FPTS/G</span></div><div><b>${f0(m.startTot)}</b><span>Season pts</span></div><div><b>${team.players.length}/${D.rounds}</b><span>Drafted</span></div>`;
+}
+
+function renderBoard() {
+  const T = D.T, hdr = D.teams.map(t => `<th class="${t.idx === D.user ? 'me' : ''}">${t.idx === D.user ? 'You' : 'Team ' + (t.idx + 1)}<small>${t.persona ? t.persona.name : 'Drafting with AI help'}</small></th>`).join('');
+  let body = '';
+  for (let r = 0; r < D.rounds; r++) {
+    body += `<tr><td class="rn">${r + 1}</td>`;
+    for (let t = 0; t < T; t++) {
+      const idx = r * T + (r % 2 ? T - 1 - t : t), e = D.log[idx];
+      const cls = (t === D.user ? 'me ' : '') + (idx === D.pick && !D.done ? 'now' : '');
+      const no = `${r + 1}.${String((r % 2 ? T - t : t + 1)).padStart(2, '0')}`;
+      body += `<td class="${cls}"><span class="pk">${no}</span>` + (e ? `<span class="nm">${esc(e.p.name)}</span><span class="ps">${e.p.team} · ${posTxt(e.p)}</span>` : '') + '</td>';
+    }
+    body += '</tr>';
+  }
+  $('#board').innerHTML = `<table><thead><tr><th style="width:34px"></th>${hdr}</tr></thead><tbody>${body}</tbody></table>`;
+  const now = $('#board td.now');
+  if (now) { const w = $('#board'); const x = now.offsetLeft - w.clientWidth / 2; if (Math.abs(w.scrollLeft - x) > w.clientWidth / 3) w.scrollLeft = Math.max(0, x); }
+}
+
+function renderRatings() {
+  const ms = D.teams.map(t => Object.assign({ t }, teamMetrics(t)));
+  const mean = ms.reduce((a, m) => a + m.strength, 0) / ms.length;
+  const sd = Math.sqrt(ms.reduce((a, m) => a + (m.strength - mean) ** 2, 0) / ms.length) || 1;
+  ms.forEach(m => { m.grade = gradeFor((m.strength - mean) / sd); });
+  ms.sort((a, b) => b.strength - a.strength);
+  $('#ratings tbody').innerHTML = ms.map((m, i) =>
+    `<tr class="${m.t.idx === D.user ? 'me' : ''}"><td class="l rk">${i + 1}</td><td class="l strong">${m.t.idx === D.user ? 'You' : 'Team ' + (m.t.idx + 1)}</td>` +
+    `<td class="l dim">${m.t.persona ? m.t.persona.name : '—'}</td><td><span class="grade ${m.grade[0]}">${m.grade}</span></td>` +
+    `<td>${f1(m.startFpg)}</td><td class="strong">${f0(m.strength)}</td><td class="dim">${m.t.players.length}</td></tr>`).join('');
+}
+
+/* ---------- compare draft slots (many quick simulated drafts) ---------- */
+async function compareSlots() {
+  const out = $('#compare-out'), btn = $('#btn-compare'), T = cfg.teams, N = 16, res = [];
+  btn.disabled = true; out.hidden = false;
+  for (let s = 0; s < T; s++) {
+    const agg = { str: 0, rank: 0, top2: 0, fpg: 0, r1: {}, r2: {} };
+    for (let k = 0; k < N; k++) {
+      const S = newState(s, mulberry32(7919 * (s + 1) + 104729 * k + 17));
+      runToEnd(S);
+      const ms = S.teams.map(teamMetrics), me = ms[s];
+      const rank = 1 + ms.filter(x => x.strength > me.strength).length;
+      agg.str += me.strength; agg.rank += rank; agg.fpg += me.startFpg; if (rank <= 2) agg.top2++;
+      S.log.filter(e => e.team === s).slice(0, 2).forEach((e, i) => { const o = i ? agg.r2 : agg.r1; o[e.p.name] = (o[e.p.name] || 0) + 1; });
+    }
+    const topOf = o => { const e = Object.entries(o).sort((a, b) => b[1] - a[1])[0]; return e ? `${e[0]} (${Math.round(100 * e[1] / N)}%)` : '–'; };
+    res.push({ slot: s + 1, str: agg.str / N, rank: agg.rank / N, top2: agg.top2 / N, fpg: agg.fpg / N, r1: topOf(agg.r1), r2: topOf(agg.r2) });
+    renderCompare(res, T, N, s + 1 < T);
+    await new Promise(r => setTimeout(r, 0));
+  }
+  btn.disabled = false;
+}
+function renderCompare(res, T, N, running) {
+  const max = Math.max(...res.map(r => r.str)), min = Math.min(...res.map(r => r.str));
+  const best = res.reduce((a, b) => (b.str > a.str ? b : a));
+  $('#compare-out').innerHTML = `<div class="sect-head"><h2>Draft slot comparison</h2></div>` +
+    `<div class="tablewrap"><table><thead><tr><th class="l">Pick</th><th class="l">Projected team strength</th><th>Lineup FPTS/G</th><th>Avg. finish</th><th>Top-2 finishes</th><th class="l">Usual first pick</th><th class="l">Usual second pick</th></tr></thead><tbody>` +
+    res.map(r => `<tr><td class="l strong">${r.slot}</td><td class="l"><div style="display:flex;gap:10px;align-items:center"><div class="bar" style="flex:1"><i style="width:${Math.max(6, 100 * (r.str - min * 0.97) / (max - min * 0.97))}%"></i></div><span class="mono">${f0(r.str)}</span></div></td>` +
+      `<td>${f1(r.fpg)}</td><td>${r.rank.toFixed(1)}</td><td>${Math.round(r.top2 * 100)}%</td><td class="l">${esc(r.r1)}</td><td class="l">${esc(r.r2)}</td></tr>`).join('') +
+    `</tbody></table></div>` +
+    `<p class="progress">${running ? `Simulating… ${res.length} of ${T} slots` : `${N} simulated drafts per slot against randomly mixed bot styles, with you drafting using the recommender. Strongest slot: <b>pick ${best.slot}</b>.`}</p>`;
+}
+$('#btn-compare').addEventListener('click', compareSlots);
+
+/* ---------- tabs + boot ---------- */
+function showTab(t) {
+  const draft = t === 'draft';
+  $('#view-rank').hidden = draft; $('#view-draft').hidden = !draft;
+  $('#tab-rank').setAttribute('aria-selected', !draft); $('#tab-draft').setAttribute('aria-selected', draft);
+}
+$('#tab-rank').addEventListener('click', () => showTab('rank'));
+$('#tab-draft').addEventListener('click', () => showTab('draft'));
+
+prepareSlots();
+recompute();
+buildScoring();
+buildSetup();
+renderRank();
+</script>
+</body>
+</html>
