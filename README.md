@@ -6,7 +6,7 @@ with pick recommendations, team ratings, and a draft-slot simulator.
 
 ![Hoops Draft Room rankings view](screenshot.png)
 
-**Live demo:** _add GitHub Pages link here_
+**Live demo:** https://kjw616.github.io/hoops-draft-room/
 
 ## What it does
 
